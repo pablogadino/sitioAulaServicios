@@ -1,0 +1,6 @@
+wait_timeout=190
+net_read_timeout=190
+net_write_timeout=190
+interactive_timeout=1300
+connect_timeout=190
+innodb_log_file_size=256M

@@ -1,0 +1,48 @@
+# docker-compose.yml
+version: "3.8"
+services:
+  php:
+    container_name: php
+    build: ./php
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - mysql
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../html:/var/www/html
+      - ./xdebug:/var/logs/xdebug
+    working_dir: /var/www/html
+    environment:
+      - UPLOAD_LIMIT:64M
+    restart: unless-stopped
+  
+  mysql:
+    build: ./mysql
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=98napito99
+    command: 
+      - --max_allowed_packet=1G
+      - --log_bin_trust_function_creators=1
+
+
+    container_name: contenedor_db
+    volumes:
+      - ../bd:/var/lib/mysql
+      - ./mysql/conf.d:/etc/mysql/conf.d
+      
+    restart: unless-stopped
+      
+  phpmyadmin:
+    image: phpmyadmin
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+    environment:
+      - PMA_ARBITRARY=1
+    depends_on:
+      - mysql
